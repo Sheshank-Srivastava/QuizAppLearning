@@ -5,12 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.quizapplearning.Utils.UIHelper;
 
 import java.security.AllPermission;
 
@@ -51,8 +54,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTempQuestion = questionCollection[mQuestionIndex];
         mTxtQuestion.setText(mTempQuestion.getmQuestion());
 
+
         mProgressBar = findViewById(R.id.quizPB);
         mQuizStatsTextView = findViewById(R.id.txtQuizStats);
+        mQuizStatsTextView.setText(String.valueOf(0));
 
         btnTrue = findViewById(R.id.btnTrue);
         btnWrong = findViewById(R.id.btnWrong);
@@ -82,7 +87,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             quizAlert.setPositiveButton("Finished the Quiz", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    finish();
+                    mUserScore = 0;
+                    mProgressBar.setProgress(0);
+                    UIHelper.get().showMessage(MainActivity.this,"Game is Reset");
+                    mQuizStatsTextView.setText(String.valueOf(0));
                 }
             });
             quizAlert.show();
@@ -94,11 +102,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void evaluateUsersAnswer(boolean userGuess) {
         int feedBackMessage = userGuess == mTempQuestion.ismAnswer() ? R.string.correct_toast_message : R.string.incorrect_toast_message;
-
+        Log.i("checkAns",(userGuess == mTempQuestion.ismAnswer())+"");
         if (feedBackMessage == R.string.correct_toast_message) {
             mUserScore += 1;
         }
         mQuizStatsTextView.setText(String.valueOf(mUserScore));
-        Toast.makeText(this, feedBackMessage, Toast.LENGTH_SHORT).show();
     }
 }
